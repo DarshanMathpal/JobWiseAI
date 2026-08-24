@@ -48,7 +48,6 @@ These screenshots reflect the working UI tested locally before deployment.
 ---
 ## Product Workflow
 
-```mermaid
 flowchart TD
     U[User]
     A[Authentication<br/>Supabase]
@@ -64,14 +63,12 @@ flowchart TD
 
     S[Saved Jobs]
     AI[AI Assistant]
+    G[Google Gemini]
 
     U --> A
     A --> D
     D --> R
     R --> J
-
-    D -.->|Search • Filters • Location • Experience| R
-    D -.->|Role Suggestions • Cached Results| R
 
     J --> RS
     RS --> EX
@@ -83,8 +80,10 @@ flowchart TD
     J --> AI
     REC --> AI
 
-    AI -->|Job + Profile Context| RESP[AI Response]
-```
+    AI --> G
+    G -->|AI Response| AI
+
+    RP -.-> G
 
 ---
 
