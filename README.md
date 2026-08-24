@@ -20,11 +20,13 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 
 <img width="1440" height="900" alt="2" src="https://github.com/user-attachments/assets/6f5a39fe-245e-43cf-be32-8bc3ab4fc4cb" />
 
+
 ### Job discovery
 
 **Main dashboard**
 
 <img width="1440" height="900" alt="3" src="https://github.com/user-attachments/assets/1db3da6d-456c-460c-b732-832165698123" />
+
 
 **Job listings, filters, resume matching, and AI assistant**
 
