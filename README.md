@@ -121,7 +121,7 @@ Frontend publishable credentials are supplied through Vite environment variables
 
 Full interactive documentation:
 
-📚**[API Documentation Link](https://jobwise-ai-backend.onrender.com/docs)**
+📚 **[API Documentation Link](https://jobwise-ai-backend.onrender.com/docs)**
 
 The API covers jobs and filters, hierarchical locations, resume processing and recommendations, health checks, and AI assistant workflows.
 
