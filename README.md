@@ -79,7 +79,8 @@ Resume Profile + Matching
   │
   ▼
 Personalized Recommendations
-```
+
+```mermaid
 flowchart TD
     U[User]
     A[Authentication<br/>Supabase]
@@ -104,7 +105,10 @@ flowchart TD
     RS --> RP
     RP --> REC
     REC --> AI
+```
+
 ---
+
 ## System Architecture
 
 ```mermaid
