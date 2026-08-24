@@ -38,29 +38,29 @@ There is intentionally one project-level README: this file.
 
 ### Authentication
 
+**Sign up**
+<img width="1440" height="900" alt="1" src="https://github.com/user-attachments/assets/f288fb9a-2f23-4b06-8094-7ce16ba5d464" />
+
 **Login**
 
-![JobWise AI login screen](docs/screenshots/login.png)
-
-**Sign up**
-
-![JobWise AI sign up screen](docs/screenshots/signup.png)
+<img width="1440" height="900" alt="2" src="https://github.com/user-attachments/assets/6390ca87-928b-447b-b942-60e2379a46c3" />
 
 ### Job discovery
 
 **Main dashboard**
 
-![JobWise AI dashboard](docs/screenshots/dashboard.png)
+<img width="1440" height="900" alt="3" src="https://github.com/user-attachments/assets/c7b3370f-9210-4196-b6ab-6a50945ca6df" />
+
 
 **Job listings, filters, resume matching, and AI assistant**
 
-![JobWise AI job listing screen](docs/screenshots/job-list.png)
+<img width="1440" height="900" alt="4" src="https://github.com/user-attachments/assets/2c804a55-428e-4ff4-96b6-2c65478f708f" />
 
 ### Job details
 
 **Job details, requirements, application links, and AI assistant**
 
-![JobWise AI job details screen](docs/screenshots/job-details.png)
+<img width="1440" height="900" alt="5" src="https://github.com/user-attachments/assets/ba394b11-1f47-442f-a391-26696f91e3c9" />
 
 These screenshots reflect the working UI tested locally before deployment.
 
