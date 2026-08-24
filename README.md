@@ -58,7 +58,6 @@ flowchart TD
 
     RS[Resume Upload]
     EX[Resume Text Extraction]
-    RP[Resume Profile]
     M[Job Matching]
     REC[Personalized Recommendations]
 
@@ -74,8 +73,7 @@ flowchart TD
     D --> RS
 
     RS --> EX
-    EX --> RP
-    RP --> M
+    EX --> M
     M --> REC
 
     J --> S
