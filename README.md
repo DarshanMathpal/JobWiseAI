@@ -104,6 +104,8 @@ flowchart TD
 - **Supabase:** authentication plus the `jobs` data used by the backend.
 - **Gemini:** resume analysis/enrichment and AI assistant requests.
 
+---
+
 ## Frontend Architecture
 
 The frontend is a React single-page application built with Vite.
@@ -258,7 +260,6 @@ VITE_API_BASE_URL=http://localhost:8000
 SUPABASE_URL=your_supabase_url
 SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-GEMINI_API_KEY=your_gemini_api_key
 CORS_ORIGINS=http://localhost:5173
 ```
 
