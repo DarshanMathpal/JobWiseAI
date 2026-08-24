@@ -78,10 +78,8 @@ flowchart TD
     M --> REC
 
     J --> S
-    REC --> S
     J --> AI
-    J --> JA
-    
+    J --> JA    
     REC --> J
     REC --> AI
 
