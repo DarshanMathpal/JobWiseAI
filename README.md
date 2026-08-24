@@ -80,6 +80,30 @@ Resume Profile + Matching
   ▼
 Personalized Recommendations
 ```
+flowchart TD
+    U[User]
+    A[Authentication<br/>Supabase]
+    D[Job Discovery<br/><br/>Search • Role Suggestions<br/>Filters • Location • Experience • Domain<br/>Cached Initial Results]
+    R[Job Results]
+    J[Job Details]
+    RS[Resume Upload]
+    RP[Resume Profile + Matching]
+    REC[Personalized Recommendations]
+    S[Saved Jobs]
+    AI[AI Assistant]
+
+    U --> A
+    A --> D
+    D --> R
+    R --> J
+
+    J --> RS
+    J --> S
+    J --> AI
+
+    RS --> RP
+    RP --> REC
+    REC --> AI
 ---
 ## System Architecture
 
@@ -104,64 +128,6 @@ flowchart TD
 - **Backend:** job APIs, filtering/pagination, location data APIs, resume PDF extraction, recommendation logic, AI endpoints, and database access.
 - **Supabase:** authentication plus the `jobs` data used by the backend.
 - **Gemini:** resume analysis/enrichment and AI assistant requests.
-
----
-
-## Frontend Architecture
-
-The frontend is a React single-page application built with Vite.
-
-Important files:
-
-```text
-JobWiseAI/
-├── README.md
-├── .gitignore
-├── render.yaml
-├── docs/
-│   ├── screenshots/
-│   │   ├── login.png
-│   │   ├── signup.png
-│   │   ├── dashboard.png
-│   │   ├── job-list.png
-│   │   └── job-details.png
-│   └── architecture/
-│       ├── product-workflow.png
-│       ├── system-architecture.png
-│       ├── frontend-architecture.png
-│       ├── backend-architecture.png
-│       └── ai-data-flow.png
-├── frontend/
-│   ├── .env.example
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── public/
-│   └── src/
-│       ├── App.jsx
-│       ├── App.css
-│       ├── JobAssistant.jsx
-│       ├── JobDetails.jsx
-│       ├── ResumeUpload.jsx
-│       ├── index.css
-│       ├── main.jsx
-│       └── lib/
-│           ├── apiConfig.js
-│           └── supabaseClient.js
-└── backend/
-    ├── .env.example
-    ├── main.py
-    ├── requirements.txt
-    ├── supabase_client.py
-    ├── supabase_admin.py
-    ├── source_normalizer.py
-    ├── ingest_jobs.py
-    ├── enrich_jobs.py
-    ├── enrich_one_job.py
-    ├── inspect_data.py
-    ├── analyze_dataset.py
-    └── check_duplicates.py
-```
 
 ---
 
