@@ -128,6 +128,32 @@ flowchart TD
 
 ---
 
+## Project Structure
+
+```text
+JobWiseAI/
+├── docs/
+│   ├── screenshots/
+│   └── architecture/
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+├── backend/
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── supabase_client.py
+│   ├── supabase_admin.py
+│   ├── ingest_jobs.py
+│   ├── enrich_jobs.py
+│   └── ...
+├── render.yaml
+├── .gitignore
+└── README.md
+```
+---
+
 ## Authentication & Security
 
 Authentication is handled by **Supabase Auth** with email/password, Google OAuth, password recovery, session persistence, and sign-out.
