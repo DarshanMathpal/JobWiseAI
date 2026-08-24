@@ -1,569 +1,168 @@
 # JobWise AI
 
-AI-powered job discovery and matching application that combines a React/Vite frontend with a FastAPI backend, Supabase data/authentication services, resume parsing, rule-based resume matching, and Gemini-powered AI assistance.
+> AI-powered job discovery and matching that helps users find relevant opportunities, understand job fit, and make better application decisions.
 
-## Overview
+JobWise AI brings job search, location-aware filtering, resume matching, saved jobs, and contextual AI assistance into one focused experience.
 
-JobWise AI helps users discover relevant jobs faster, refine results with structured filters, upload a PDF resume for personalized matching, ask an AI assistant about jobs, and save opportunities for later.
+🌐 **Live Website:** https://job-wise-ai.vercel.app  
+▶️ **Project Walkthrough:** _Video coming soon_  
+📚 **API Documentation:** https://jobwise-ai-backend.onrender.com/docs
 
-The application is split into two deployable parts:
+---
 
-- `frontend/` → React + Vite → Vercel
-- `backend/` → FastAPI → Render
-
-There is intentionally one project-level README: this file.
-
-## Core Features
-
-- Email/password authentication through Supabase
-- Google OAuth through Supabase
-- Password reset and recovery flow
-- Fast cached initial job loading
-- Cached country/filter data for smoother navigation
-- Job search, sorting, pagination, and filtering
-- Country → state → city location selection
-- Country flags in the location selector
-- Company-logo fallback avatars
-- Saved jobs
-- Job details and application links
-- Structured job-description formatting
-- PDF resume upload and text extraction
-- Resume-derived profile creation
-- Resume/job recommendations
-- Gemini-powered AI assistant
-- Responsive desktop and mobile layouts
-
-
-## Screenshots
+## Product Preview
 
 ### Authentication
 
-**Login**
-
-![JobWise AI login screen](docs/screenshots/login.png)
-
-**Sign up**
-
-![JobWise AI sign up screen](docs/screenshots/signup.png)
-
-### Job discovery
-
-**Main dashboard**
-
-![JobWise AI dashboard](docs/screenshots/dashboard.png)
-
-**Job listings, filters, resume matching, and AI assistant**
-
-![JobWise AI job listing screen](docs/screenshots/job-list.png)
-
-### Job details
-
-**Job details, requirements, application links, and AI assistant**
-
-![JobWise AI job details screen](docs/screenshots/job-details.png)
-
-These screenshots reflect the working UI tested locally before deployment.
-
-## Product Workflow
-
-```text
-User
-  │
-  ▼
-Authentication (Supabase)
-  │
-  ▼
-Job Discovery
-  │
-  ├── Search / Role suggestions
-  ├── Filters / Location / Experience / Domain
-  └── Cached initial results
-  │
-  ▼
-Job Results
-  │
-  ▼
-Job Details
-  │
-  ├── Requirements
-  ├── Application links
-  └── AI Assistant
-  │
-  ├──────────────┐
-  ▼              ▼
-Resume Upload   Saved Jobs
-  │
-  ▼
-Resume Profile + Matching
-  │
-  ▼
-Personalized Recommendations
-```
-
-## System Architecture
-
-```mermaid
-flowchart TD
-    U[User Browser]
-    V[Vercel - React/Vite Frontend]
-    A[Render - FastAPI Backend]
-    S[Supabase Auth + Postgres/API]
-    G[Google Gemini API]
-
-    U --> V
-    V -->|REST API| A
-    V -->|Auth / OAuth| S
-    A --> S
-    A --> G
-```
-
-### Runtime responsibilities
-
-- **Frontend:** UI, authentication UX, search/filter interactions, local caching, saved jobs, resume upload UI, AI assistant UI, and job-details rendering.
-- **Backend:** job APIs, filtering/pagination, location data APIs, resume PDF extraction, recommendation logic, AI endpoints, and database access.
-- **Supabase:** authentication plus the `jobs` data used by the backend.
-- **Gemini:** resume analysis/enrichment and AI assistant requests.
-
-## Frontend Architecture
-
-The frontend is a React single-page application built with Vite.
-
-Important files:
-
-```text
-frontend/
-├── index.html
-├── package.json
-├── package-lock.json
-├── vite.config.js
-├── .env.example
-├── public/
-│   └── favicon.svg
-└── src/
-    ├── App.jsx
-    ├── App.css
-    ├── JobAssistant.jsx
-    ├── JobDetails.jsx
-    ├── ResumeUpload.jsx
-    ├── index.css
-    ├── main.jsx
-    ├── lib/
-    │   ├── apiConfig.js
-    │   └── supabaseClient.js
-    └── assets/
-        └── hero.png / generated assets as applicable
-```
-
-### Client-side caching
-
-The frontend caches:
-
-- the normal/default job result set
-- countries used by the location selector
-- filter options
-- saved jobs
-
-The default job cache is used to render a useful screen immediately; the frontend still requests fresh data in the background.
-
-## Backend Architecture
-
-The backend is a FastAPI application exposed from `backend/main.py`.
-
-```text
-backend/
-├── main.py
-├── supabase_client.py
-├── supabase_admin.py
-├── source_normalizer.py
-├── ingest_jobs.py
-├── enrich_jobs.py
-├── enrich_one_job.py
-├── inspect_data.py
-├── analyze_dataset.py
-├── check_duplicates.py
-├── requirements.txt
-└── .env.example
-```
+<table>
+<tr>
+<td width="50%" align="center">
+<img src="docs/screenshots/login.png" alt="JobWise AI login" width="100%">
+<br><sub><b>Login</b> — Email/password and Google authentication.</sub>
+</td>
+<td width="50%" align="center">
+<img src="docs/screenshots/signup.png" alt="JobWise AI signup" width="100%">
+<br><sub><b>Sign up</b> — Account creation through Supabase Auth.</sub>
+</td>
+</tr>
+</table>
 
-### Runtime API responsibilities
+### Job Discovery
 
-- health checks
-- job search and pagination
-- filter-option generation
-- country/state/city lookup
-- job details
-- PDF resume extraction
-- resume profile analysis endpoint
-- Gemini resume analysis endpoint
-- job recommendations
-- AI assistant chat
+<table>
+<tr>
+<td width="50%" align="center">
+<img src="docs/screenshots/dashboard.png" alt="JobWise AI dashboard" width="100%">
+<br><sub><b>Dashboard</b> — Discover and refine opportunities.</sub>
+</td>
+<td width="50%" align="center">
+<img src="docs/screenshots/job-list.png" alt="JobWise AI job list" width="100%">
+<br><sub><b>Job List</b> — Search, filter, sort, and review jobs.</sub>
+</td>
+</tr>
+</table>
 
-The data-processing scripts support ingestion, source normalization, duplicate inspection, and AI enrichment workflows.
+### Job Details
 
-## Database Architecture
+<p align="center">
+<img src="docs/screenshots/job-details.png" alt="JobWise AI job details" width="88%">
+<br><sub><b>Job Details</b> — Requirements, application links, and AI assistance.</sub>
+</p>
 
-The application reads and writes the `jobs` table through Supabase.
+---
 
-The repository code uses fields including:
+## Why JobWise AI?
 
-- `job_id`
-- `title`
-- `company_name`
-- `location`
-- `source`
-- `description`
-- `formatted_description`
-- `skills`
-- `roles`
-- `min_experience`
-- `max_experience`
-- `domain`
-- `employment_type`
-- `apply_options`
-- `thumbnail`
-- AI enrichment fields such as `ai_skills`, `ai_roles`, `ai_tags`, and `ai_enriched`
+Job searching is often a discovery problem: a large number of listings can make it difficult to identify the opportunities that actually fit.
 
-The README intentionally does not invent additional tables or relationships that are not represented by the codebase.
+- **Discover** — Search and narrow opportunities by role, location, experience, domain, skills, and source.
+- **Understand fit** — Upload a PDF resume, derive a profile, and receive job recommendations.
+- **Decide faster** — Review structured job details, save opportunities, and ask the AI assistant questions using relevant context.
 
-## AI Architecture
+The goal is a simpler path from **finding a job** to **understanding whether it is worth applying to**.
 
-### Resume workflow
+---
 
-1. The frontend uploads a PDF to `/api/resume/upload`.
-2. FastAPI extracts text with `pypdf`.
-3. The frontend derives a basic resume profile from the returned text.
-4. The frontend requests `/api/jobs/recommend` for matching jobs.
-5. Optional Gemini analysis is available through `/api/resume/analyze`.
+## Key Features
 
-### Job enrichment
+| Feature | Description |
+|---|---|
+| Job discovery | Browse jobs with cached initial results and fresh API data. |
+| Search & filters | Source, skills, location, domain, experience, and posted-window filtering. |
+| Location hierarchy | Country → state → city selection with country flags. |
+| Job details | Structured descriptions, requirements, and application links. |
+| Resume matching | PDF text extraction, profile creation, and job recommendations. |
+| Gemini AI | Optional resume analysis, enrichment, and AI-assisted workflows. |
+| Saved jobs | Save opportunities locally for later review. |
+| Authentication | Email/password, Google OAuth, password recovery, sessions, and sign-out. |
+| Responsive UI | Desktop and mobile layouts. |
 
-The backend enrichment scripts use the Google Gemini SDK to enrich job records with skills, roles, experience, and tags.
+---
 
-### AI Assistant
+## How It Works
 
-The frontend sends the current question, profile, selected job context, recommended jobs, filtered jobs, and recent conversation history to `/api/assistant/chat`.
+<p align="center">
+<img src="docs/architecture/product-workflow.png" alt="JobWise AI product workflow" width="95%">
+</p>
 
-## Authentication
+The main flow connects authentication, discovery, job details, resume matching, contextual assistance, and action.
 
-Authentication is handled by Supabase Auth.
+---
 
-Supported flows:
+## Architecture
 
-- email/password sign-up
-- email/password login
-- Google OAuth
-- password reset email
-- password recovery page
-- remembered or session-only login persistence
-- sign-out
+### Production Architecture
 
-Frontend Supabase credentials are read from Vite environment variables and are not hardcoded in source code.
+<p align="center">
+<img src="docs/architecture/system-architecture.png" alt="JobWise AI production architecture" width="92%">
+</p>
 
-## Caching Strategy
+Vercel hosts the React/Vite frontend, Render hosts the FastAPI backend, Supabase provides authentication and Postgres-backed job data/API access, and Gemini supports optional AI workflows.
 
-### Job cache
+### Frontend Architecture
 
-The frontend stores the default job result set in `localStorage` and uses it immediately on application load. A fresh API request can then replace the cached data.
+<p align="center">
+<img src="docs/architecture/frontend-architecture.png" alt="JobWise AI frontend architecture" width="92%">
+</p>
 
-### Country cache
+### Backend Architecture
 
-Countries used by the location picker are stored in `localStorage`, avoiding a repeated country-list request across browser sessions.
+<p align="center">
+<img src="docs/architecture/backend-architecture.png" alt="JobWise AI backend architecture" width="92%">
+</p>
 
-### Filter cache
+---
 
-Filter options are cached in `localStorage` so source, skills, domains, and role suggestions can render faster.
+## AI & Data Flow
 
-### Saved jobs
+<p align="center">
+<img src="docs/architecture/ai-data-flow.png" alt="JobWise AI data flow" width="94%">
+</p>
 
-Saved jobs are stored locally in the browser.
+The AI layer supports two practical paths: resume-based matching and contextual job-search assistance.
 
-## API Documentation
-
-### Health
-
-`GET /api/health`
-
-Returns the backend health status.
-
-### Jobs
-
-`GET /api/jobs`
-
-Supports search, source, skills, locations, domains, experience, posted-window filtering, pagination, and sorting-related inputs.
-
-### Job details
-
-`GET /api/jobs/{job_id}`
-
-Returns one job record.
-
-### Filter options
-
-`GET /api/jobs/filter-options`
-
-Returns available source, skill, domain, and role-title options.
-
-### Locations
-
-`GET /api/locations/countries`
-
-`GET /api/locations/{country_code}/states`
-
-`GET /api/locations/{country_code}/states/{state_code}/cities`
-
-Provide hierarchical location data for the location picker.
-
-### Resume upload
-
-`POST /api/resume/upload`
-
-Accepts a PDF multipart upload and extracts readable text with `pypdf`.
-
-### Resume profile
-
-`POST /api/resume/profile`
-
-Accepts resume text and returns a profile response.
-
-### Resume AI analysis
-
-`POST /api/resume/analyze`
-
-Uses a supplied Gemini API key to analyze resume text.
-
-### Job recommendations
-
-`POST /api/jobs/recommend`
-
-Returns jobs ranked against the supplied profile.
-
-### AI assistant
-
-`POST /api/assistant/chat`
-
-Uses the supplied Gemini API key plus job/profile context to answer job-search questions.
-
-## Environment Variables
-
-### Frontend: `frontend/.env`
-
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
-VITE_API_BASE_URL=http://localhost:8000
-```
-
-For production, `VITE_API_BASE_URL` should point to the deployed Render backend.
-
-### Backend: `backend/.env`
-
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-CORS_ORIGINS=http://localhost:5173
-```
-
-`GEMINI_API_KEY` is used by the backend enrichment scripts (`enrich_jobs.py` and `enrich_one_job.py`) when those scripts are run manually.
-
-Never commit real secrets.
-
-## Local Development
-
-### Prerequisites
-
-- Node.js and npm
-- Python 3.12+ recommended
-- Supabase project
-- Required environment variables
-
-### 1. Clone the repository
-
-```bash
-git clone <your-github-repository-url>
-cd ai-job-board
-```
-
-### 2. Configure frontend
-
-```bash
-cd frontend
-cp .env.example .env
-npm install
-```
-
-Set the real frontend values in `.env`.
-
-### 3. Configure backend
-
-```bash
-cd ../backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-```
-
-Set the real backend values in `.env`.
-
-### 4. Start backend
-
-From `backend/`:
-
-```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 5. Start frontend
-
-From `frontend/`:
-
-```bash
-npm run dev
-```
-
-The Vite development server normally runs on `http://localhost:5173`.
-
-## Deployment
-
-### GitHub
-
-Push the final repository with this structure:
-
-```text
-README.md
-frontend/
-backend/
-render.yaml
-.gitignore
-```
-
-Do not commit `.env`, credentials, `node_modules`, Python virtual environments, or build output.
-
-### Render — Backend
-
-The repository includes `render.yaml` configured for the backend.
-
-- Runtime: Python
-- Root directory: `backend`
-- Build command: `pip install -r requirements.txt`
-- Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-- Health check: `/api/health`
-
-Set these Render environment variables:
-
-- `SUPABASE_URL`
-- `SUPABASE_PUBLISHABLE_KEY`
-- `CORS_ORIGINS` with the deployed Vercel URL
-
-If enrichment scripts are executed in an environment, also provide the appropriate Gemini and Supabase admin credentials there.
-
-### Vercel — Frontend
-
-Deploy the `frontend/` directory as the Vercel project root.
-
-Build command:
-
-```bash
-npm run build
-```
-
-Output directory:
-
-```text
-dist
-```
-
-Set:
-
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
-- `VITE_API_BASE_URL`
-
-`VITE_API_BASE_URL` should be the Render backend URL.
-
-### Supabase Auth redirect configuration
-
-After deployment, make sure Supabase Auth allows the production frontend URL and the Google OAuth redirect URL used by the application.
-
-## Production Checklist
-
-- [ ] Real secrets are stored only in deployment environment variables
-- [ ] `VITE_API_BASE_URL` points to the Render API
-- [ ] Render `CORS_ORIGINS` includes the Vercel frontend URL
-- [ ] Supabase URL and public key are correct
-- [ ] Supabase Auth redirect URLs are configured
-- [ ] Google OAuth redirect settings are correct
-- [ ] `npm run build` succeeds
-- [ ] Backend health check returns success
-- [ ] Job cache behaves correctly after login/reload
-- [ ] Resume PDF upload works
-- [ ] Gemini-backed features work with an available API key/quota
-- [ ] Saved jobs persist as expected
-- [ ] Mobile layout is checked
+---
 
 ## Technology Stack
 
-### Frontend
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite 8, React Icons |
+| Backend | FastAPI, Uvicorn, Pydantic |
+| PDF processing | pypdf |
+| Database & Auth | Supabase |
+| AI | Google Gemini API, `google-genai` |
+| Deployment | Vercel, Render |
+| Source control | GitHub |
 
-- React 19
-- Vite 8
-- React DOM
-- React Icons
-- Native browser `fetch`, `localStorage`, and `sessionStorage`
-
-### Backend
-
-- Python
-- FastAPI
-- Uvicorn
-- Pydantic
-- Python Dotenv
-- Python Multipart
-- pypdf
-- ijson
-- Country State City Countries
-
-### Database / Platform Services
-
-- Supabase
-  - Authentication
-  - Postgres-backed data/API access
-
-### AI / ML
-
-- Google Gemini API
-- `google-genai` Python SDK
-
-### Deployment
-
-- GitHub
-- Vercel for frontend
-- Render for backend
-
-### Development / Build Tools
-
-- npm
-- Oxlint
-
-Only technologies actually used by the final codebase are listed here.
+---
 
 ## Project Structure
 
 ```text
-.
+JobWiseAI/
 ├── README.md
 ├── .gitignore
 ├── render.yaml
+├── docs/
+│   ├── screenshots/
+│   │   ├── login.png
+│   │   ├── signup.png
+│   │   ├── dashboard.png
+│   │   ├── job-list.png
+│   │   └── job-details.png
+│   └── architecture/
+│       ├── product-workflow.png
+│       ├── system-architecture.png
+│       ├── frontend-architecture.png
+│       ├── backend-architecture.png
+│       └── ai-data-flow.png
 ├── frontend/
 │   ├── .env.example
 │   ├── index.html
 │   ├── package.json
-│   ├── package-lock.json
 │   ├── vite.config.js
-│   ├── .oxlintrc.json
 │   ├── public/
-│   │   └── favicon.svg
 │   └── src/
 │       ├── App.jsx
 │       ├── App.css
@@ -572,56 +171,141 @@ Only technologies actually used by the final codebase are listed here.
 │       ├── ResumeUpload.jsx
 │       ├── index.css
 │       ├── main.jsx
-│       ├── lib/
-│       │   ├── apiConfig.js
-│       │   └── supabaseClient.js
-│       └── assets/
-├── backend/
-│   ├── .env.example
-│   ├── main.py
-│   ├── requirements.txt
-│   ├── supabase_client.py
-│   ├── supabase_admin.py
-│   ├── source_normalizer.py
-│   ├── ingest_jobs.py
-│   ├── enrich_jobs.py
-│   ├── enrich_one_job.py
-│   ├── inspect_data.py
-│   ├── analyze_dataset.py
-│   └── check_duplicates.py
-└── ...
+│       └── lib/
+│           ├── apiConfig.js
+│           └── supabaseClient.js
+└── backend/
+    ├── .env.example
+    ├── main.py
+    ├── requirements.txt
+    ├── supabase_client.py
+    ├── supabase_admin.py
+    ├── source_normalizer.py
+    ├── ingest_jobs.py
+    ├── enrich_jobs.py
+    ├── enrich_one_job.py
+    ├── inspect_data.py
+    ├── analyze_dataset.py
+    └── check_duplicates.py
 ```
 
-## Troubleshooting
+---
 
-### Frontend cannot reach backend
+## Authentication & Security
 
-Check `VITE_API_BASE_URL` and the backend `CORS_ORIGINS` configuration.
+Authentication is handled by **Supabase Auth** with email/password, Google OAuth, password recovery, session persistence, and sign-out.
 
-### Supabase login does not work
+Frontend publishable credentials are supplied through Vite environment variables; server-side credentials stay in backend environment variables.
 
-Check the Supabase URL/key variables and the Auth redirect settings.
+**Never commit real credentials or `.env` files.**
 
-### Password reset redirects incorrectly
+---
 
-Check the Supabase Site URL and allowed redirect URLs.
+## API
 
-### AI assistant quota error
+Full interactive documentation:
 
-The assistant reports Gemini quota/rate-limit errors when the selected Gemini project has no remaining quota.
+**https://jobwise-ai-backend.onrender.com/docs**
 
-### Resume upload fails
+The API covers jobs and filters, hierarchical locations, resume processing and recommendations, health checks, and AI assistant workflows.
 
-Make sure the file is a text-based PDF under the application's configured size limit.
+---
 
-### Render backend starts but requests fail
+## Deployment
 
-Check the Render logs, environment variables, database connectivity, and CORS origin configuration.
+```text
+GitHub
+├──► Vercel ──► React/Vite Frontend
+│
+└──► Render ──► FastAPI Backend
+                   ├──► Supabase
+                   └──► Gemini (optional)
+```
 
-## Future Improvements
+| Service | Production URL |
+|---|---|
+| Website | https://job-wise-ai.vercel.app |
+| Backend | https://jobwise-ai-backend.onrender.com |
+| API Docs | https://jobwise-ai-backend.onrender.com/docs |
 
-- Add automated backend and frontend tests
-- Move more heavy data-processing tasks into scheduled/background jobs
-- Add structured observability and error monitoring
-- Add richer persisted user profiles if product requirements call for them
-- Add automated CI checks for linting and production builds
+---
+
+## Local Development
+
+### Prerequisites
+
+- Node.js and npm
+- Python 3.12+
+- Supabase project
+- Required environment variables
+
+### Clone
+
+```bash
+git clone https://github.com/DarshanMathpal/JobWiseAI.git
+cd JobWiseAI
+```
+
+### Frontend
+
+```bash
+cd frontend
+cp .env.example .env
+npm install
+npm run dev
+```
+
+### Backend
+
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Local frontend: `http://localhost:5173`  
+Local API: `http://localhost:8000`
+
+---
+
+## Environment Variables
+
+### Frontend — `frontend/.env`
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+### Backend — `backend/.env`
+
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+GEMINI_API_KEY=your_gemini_api_key
+CORS_ORIGINS=http://localhost:5173
+```
+
+`GEMINI_API_KEY` is optional for the manual Gemini-powered enrichment/analysis workflows; users who enable Gemini-powered functionality should provide their own valid Gemini key.
+
+**Never commit real credentials or `.env` files.**
+
+---
+
+## Performance
+
+The frontend caches default job results, country data, filter options, and saved jobs in the browser. Cached default results can render immediately while fresh API data is requested in the background, improving perceived loading speed.
+
+---
+
+## Live Demo
+
+🌐 https://job-wise-ai.vercel.app  
+📚 https://jobwise-ai-backend.onrender.com/docs
+
+▶️ **Project walkthrough:** add the video link here after recording.
