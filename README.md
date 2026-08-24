@@ -54,6 +54,7 @@ flowchart TD
     D[Job Discovery]
     R[Job Results]
     J[Job Details]
+    AP[Apply Filters]
 
     RS[Resume Upload]
     EX[Resume Text Extraction]
@@ -67,7 +68,8 @@ flowchart TD
 
     U --> A
     A --> D
-    D --> R
+    D --> AP
+    AP --> R
     R --> J
     D --> RS
 
