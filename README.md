@@ -6,7 +6,6 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 
 🌐 **Live Website:** https://job-wise-ai.vercel.app  
 ▶️ **Project Walkthrough:** _Video coming soon_  
-📚 **API Documentation:** https://jobwise-ai-backend.onrender.com/docs
 
 ---
 
@@ -19,27 +18,25 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 
 **Login**
 
-![JobWise AI login screen](docs/screenshots/login.png)
-
-**Sign up**
-
-![JobWise AI sign up screen](docs/screenshots/signup.png)
+<img width="1440" height="900" alt="2" src="https://github.com/user-attachments/assets/6f5a39fe-245e-43cf-be32-8bc3ab4fc4cb" />
 
 ### Job discovery
 
 **Main dashboard**
 
-![JobWise AI dashboard](docs/screenshots/dashboard.png)
+<img width="1440" height="900" alt="3" src="https://github.com/user-attachments/assets/1db3da6d-456c-460c-b732-832165698123" />
 
 **Job listings, filters, resume matching, and AI assistant**
 
-![JobWise AI job listing screen](docs/screenshots/job-list.png)
+<img width="1440" height="900" alt="4" src="https://github.com/user-attachments/assets/e02da8e3-6bf2-434b-8960-fd1b956d4548" />
+
 
 ### Job details
 
 **Job details, requirements, application links, and AI assistant**
 
-![JobWise AI job details screen](docs/screenshots/job-details.png)
+<img width="1440" height="900" alt="5" src="https://github.com/user-attachments/assets/3f294790-8511-4634-962f-a3767a5bb113" />
+
 
 These screenshots reflect the working UI tested locally before deployment.
 
