@@ -79,7 +79,8 @@ flowchart TD
 
     J --> S
     J --> AI
-    J --> AP
+    J --> JA
+    REC --> S
     REC --> J
     REC --> AI
 
