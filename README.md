@@ -8,6 +8,8 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 
 ▶️ **[Project Video Link]** 
 
+📚 **[API Documentation Link](https://jobwise-ai-backend.onrender.com/docs)**
+
 ---
 
 ## Product Preview
@@ -118,16 +120,6 @@ Frontend publishable credentials are supplied through Vite environment variables
 
 ---
 
-## API
-
-Full interactive documentation:
-
-📚 **[API Documentation Link](https://jobwise-ai-backend.onrender.com/docs)**
-
-The API covers jobs and filters, hierarchical locations, resume processing and recommendations, health checks, and AI assistant workflows.
-
----
-
 ## Deployment
 
 ```text
@@ -210,11 +202,5 @@ CORS_ORIGINS=http://localhost:5173
 `GEMINI_API_KEY` is optional for the manual Gemini-powered enrichment/analysis workflows; users who enable Gemini-powered functionality should provide their own valid Gemini key.
 
 **Never commit real credentials or `.env` files.**
-
----
-
-## Performance
-
-The frontend caches default job results, country data, filter options, and saved jobs in the browser. Cached default results can render immediately while fresh API data is requested in the background, improving perceived loading speed.
 
 ---
