@@ -14,130 +14,100 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 
 ### Authentication
 
-<table>
-<tr>
-<td width="50%" align="center">
-<img src="docs/screenshots/login.png" alt="JobWise AI login" width="100%">
-<br><sub><b>Login</b> — Email/password and Google authentication.</sub>
-</td>
-<td width="50%" align="center">
-<img src="docs/screenshots/signup.png" alt="JobWise AI signup" width="100%">
-<br><sub><b>Sign up</b> — Account creation through Supabase Auth.</sub>
-</td>
-</tr>
-</table>
+**Sign up**
+<img width="1440" height="900" alt="1" src="https://github.com/user-attachments/assets/f288fb9a-2f23-4b06-8094-7ce16ba5d464" />
 
-### Job Discovery
+**Login**
 
-<table>
-<tr>
-<td width="50%" align="center">
-<img src="docs/screenshots/dashboard.png" alt="JobWise AI dashboard" width="100%">
-<br><sub><b>Dashboard</b> — Discover and refine opportunities.</sub>
-</td>
-<td width="50%" align="center">
-<img src="docs/screenshots/job-list.png" alt="JobWise AI job list" width="100%">
-<br><sub><b>Job List</b> — Search, filter, sort, and review jobs.</sub>
-</td>
-</tr>
-</table>
+![JobWise AI login screen](docs/screenshots/login.png)
 
-### Job Details
+**Sign up**
 
-<p align="center">
-<img src="docs/screenshots/job-details.png" alt="JobWise AI job details" width="88%">
-<br><sub><b>Job Details</b> — Requirements, application links, and AI assistance.</sub>
-</p>
+![JobWise AI sign up screen](docs/screenshots/signup.png)
 
----
+### Job discovery
 
-## Why JobWise AI?
+**Main dashboard**
 
-Job searching is often a discovery problem: a large number of listings can make it difficult to identify the opportunities that actually fit.
+![JobWise AI dashboard](docs/screenshots/dashboard.png)
 
-- **Discover** — Search and narrow opportunities by role, location, experience, domain, skills, and source.
-- **Understand fit** — Upload a PDF resume, derive a profile, and receive job recommendations.
-- **Decide faster** — Review structured job details, save opportunities, and ask the AI assistant questions using relevant context.
+**Job listings, filters, resume matching, and AI assistant**
 
-The goal is a simpler path from **finding a job** to **understanding whether it is worth applying to**.
+![JobWise AI job listing screen](docs/screenshots/job-list.png)
 
----
+### Job details
 
-## Key Features
+**Job details, requirements, application links, and AI assistant**
 
-| Feature | Description |
-|---|---|
-| Job discovery | Browse jobs with cached initial results and fresh API data. |
-| Search & filters | Source, skills, location, domain, experience, and posted-window filtering. |
-| Location hierarchy | Country → state → city selection with country flags. |
-| Job details | Structured descriptions, requirements, and application links. |
-| Resume matching | PDF text extraction, profile creation, and job recommendations. |
-| Gemini AI | Optional resume analysis, enrichment, and AI-assisted workflows. |
-| Saved jobs | Save opportunities locally for later review. |
-| Authentication | Email/password, Google OAuth, password recovery, sessions, and sign-out. |
-| Responsive UI | Desktop and mobile layouts. |
+![JobWise AI job details screen](docs/screenshots/job-details.png)
 
----
+These screenshots reflect the working UI tested locally before deployment.
 
-## How It Works
+## Product Workflow
 
-<p align="center">
-<img src="docs/architecture/product-workflow.png" alt="JobWise AI product workflow" width="95%">
-</p>
+```text
+User
+  │
+  ▼
+Authentication (Supabase)
+  │
+  ▼
+Job Discovery
+  │
+  ├── Search / Role suggestions
+  ├── Filters / Location / Experience / Domain
+  └── Cached initial results
+  │
+  ▼
+Job Results
+  │
+  ▼
+Job Details
+  │
+  ├── Requirements
+  ├── Application links
+  └── AI Assistant
+  │
+  ├──────────────┐
+  ▼              ▼
+Resume Upload   Saved Jobs
+  │
+  ▼
+Resume Profile + Matching
+  │
+  ▼
+Personalized Recommendations
+```
 
-The main flow connects authentication, discovery, job details, resume matching, contextual assistance, and action.
+## System Architecture
 
----
+```mermaid
+flowchart TD
+    U[User Browser]
+    V[Vercel - React/Vite Frontend]
+    A[Render - FastAPI Backend]
+    S[Supabase Auth + Postgres/API]
+    G[Google Gemini API]
 
-## Architecture
+    U --> V
+    V -->|REST API| A
+    V -->|Auth / OAuth| S
+    A --> S
+    A --> G
+```
 
-### Production Architecture
+### Runtime responsibilities
 
-<p align="center">
-<img src="docs/architecture/system-architecture.png" alt="JobWise AI production architecture" width="92%">
-</p>
+- **Frontend:** UI, authentication UX, search/filter interactions, local caching, saved jobs, resume upload UI, AI assistant UI, and job-details rendering.
+- **Backend:** job APIs, filtering/pagination, location data APIs, resume PDF extraction, recommendation logic, AI endpoints, and database access.
+- **Supabase:** authentication plus the `jobs` data used by the backend.
+- **Gemini:** resume analysis/enrichment and AI assistant requests.
 
-Vercel hosts the React/Vite frontend, Render hosts the FastAPI backend, Supabase provides authentication and Postgres-backed job data/API access, and Gemini supports optional AI workflows.
+## Frontend Architecture
 
-### Frontend Architecture
+The frontend is a React single-page application built with Vite.
 
-<p align="center">
-<img src="docs/architecture/frontend-architecture.png" alt="JobWise AI frontend architecture" width="92%">
-</p>
-
-### Backend Architecture
-
-<p align="center">
-<img src="docs/architecture/backend-architecture.png" alt="JobWise AI backend architecture" width="92%">
-</p>
-
----
-
-## AI & Data Flow
-
-<p align="center">
-<img src="docs/architecture/ai-data-flow.png" alt="JobWise AI data flow" width="94%">
-</p>
-
-The AI layer supports two practical paths: resume-based matching and contextual job-search assistance.
-
----
-
-## Technology Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | React 19, Vite 8, React Icons |
-| Backend | FastAPI, Uvicorn, Pydantic |
-| PDF processing | pypdf |
-| Database & Auth | Supabase |
-| AI | Google Gemini API, `google-genai` |
-| Deployment | Vercel, Render |
-| Source control | GitHub |
-
----
-
-## Project Structure
+Important files:
 
 ```text
 JobWiseAI/
