@@ -88,43 +88,6 @@ flowchart TD
 
 ---
 
-## Product Workflow
-
-```text
-User
-  │
-  ▼
-Authentication (Supabase)
-  │
-  ▼
-Job Discovery
-  │
-  ├── Search / Role suggestions
-  ├── Filters / Location / Experience / Domain
-  └── Cached initial results
-  │
-  ▼
-Job Results
-  │
-  ▼
-Job Details
-  │
-  ├── Requirements
-  ├── Application links
-  └── AI Assistant
-  │
-  ├──────────────┐
-  ▼              ▼
-Resume Upload   Saved Jobs
-  │
-  ▼
-Resume Profile + Matching
-  │
-  ▼
-Personalized Recommendations
-```
----
-
 ## System Architecture
 
 ```mermaid
