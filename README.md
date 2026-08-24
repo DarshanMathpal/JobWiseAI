@@ -79,7 +79,7 @@ Resume Profile + Matching
   │
   ▼
 Personalized Recommendations
-
+```
 ---
 
 ## System Architecture
