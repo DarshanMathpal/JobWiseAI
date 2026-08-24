@@ -79,34 +79,6 @@ Resume Profile + Matching
   │
   ▼
 Personalized Recommendations
----
-
-```mermaid
-flowchart TD
-    U[User]
-    A[Authentication Supabase]
-    D[Job Discovery Search • Role Suggestions Filters • Location • Experience • Domain Cached Initial Results]
-    R[Job Results]
-    J[Job Details]
-    RS[Resume Upload]
-    RP[Resume Profile + Matching]
-    REC[Personalized Recommendations]
-    S[Saved Jobs]
-    AI[AI Assistant]
-
-    U --> A
-    A --> D
-    D --> R
-    R --> J
-
-    J --> RS
-    J --> S
-    J --> AI
-
-    RS --> RP
-    RP --> REC
-    REC --> AI
-```
 
 ---
 
