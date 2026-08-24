@@ -47,7 +47,7 @@ These screenshots reflect the working UI tested locally before deployment.
 
 ---
 ## Product Workflow
-
+```mermaid
 flowchart TD
     U[User]
     A[Authentication<br/>Supabase]
@@ -84,7 +84,7 @@ flowchart TD
     G -->|AI Response| AI
 
     RP -.-> G
-
+```
 ---
 
 ## System Architecture
