@@ -62,6 +62,7 @@ flowchart TD
     REC[Personalized Recommendations]
 
     S[Saved Jobs]
+    JA[Job Apply]
     AI[AI Assistant]
     G[Google Gemini]
 
@@ -78,6 +79,8 @@ flowchart TD
 
     J --> S
     J --> AI
+    J --> AP
+    REC --> J
     REC --> AI
 
     AI --> G
