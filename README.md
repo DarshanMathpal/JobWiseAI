@@ -98,20 +98,6 @@ flowchart TD
     A --> S
     A --> G
 ```
-```mermaid
-flowchart TD
-    U[User Browser]
-    V[Vercel - React/Vite Frontend]
-    A[Render - FastAPI Backend]
-    S[Supabase Auth + Postgres/API]
-    G[Google Gemini API]
-
-    U --> V
-    V -->|REST API| A
-    V -->|Auth / OAuth| S
-    A --> S
-    A --> G
-```
 
 ### Runtime responsibilities
 
