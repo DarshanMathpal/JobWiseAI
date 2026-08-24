@@ -46,6 +46,47 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 These screenshots reflect the working UI tested locally before deployment.
 
 ---
+## Product Workflow
+
+```mermaid
+flowchart TD
+    U[User]
+    A[Authentication<br/>Supabase]
+    D[Job Discovery]
+    R[Job Results]
+    J[Job Details]
+
+    RS[Resume Upload]
+    EX[Resume Text Extraction]
+    RP[Resume Profile]
+    M[Job Matching]
+    REC[Personalized Recommendations]
+
+    S[Saved Jobs]
+    AI[AI Assistant]
+
+    U --> A
+    A --> D
+    D --> R
+    R --> J
+
+    D -.->|Search • Filters • Location • Experience| R
+    D -.->|Role Suggestions • Cached Results| R
+
+    J --> RS
+    RS --> EX
+    EX --> RP
+    RP --> M
+    M --> REC
+
+    J --> S
+    J --> AI
+    REC --> AI
+
+    AI -->|Job + Profile Context| RESP[AI Response]
+```
+
+---
 
 ## Product Workflow
 
