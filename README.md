@@ -110,6 +110,20 @@ flowchart TD
 
 ---
 
+## Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite 8, React Icons |
+| Backend | FastAPI, Uvicorn, Pydantic |
+| Database & Auth | Supabase |
+| PDF Processing | pypdf |
+| AI | Google Gemini API, `google-genai` |
+| Deployment | Vercel, Render |
+| Source Control | GitHub |
+
+---
+
 ## Authentication & Security
 
 Authentication is handled by **Supabase Auth** with email/password, Google OAuth, password recovery, session persistence, and sign-out.
