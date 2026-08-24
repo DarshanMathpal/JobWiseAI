@@ -83,6 +83,7 @@ Personalized Recommendations
 ---
 
 ## System Architecture
+
 ```mermaid
 flowchart TD
     U[User Browser]
