@@ -82,8 +82,6 @@ flowchart TD
 
     AI --> G
     G -->|AI Response| AI
-
-    RP -.-> G
 ```
 ---
 
