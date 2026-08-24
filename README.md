@@ -46,6 +46,34 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 These screenshots reflect the working UI tested locally before deployment.
 
 ---
+
+## Why JobWise AI?
+
+Finding relevant jobs can become overwhelming when users have to search through large numbers of listings and manually compare requirements.
+
+JobWise AI brings discovery, personalization, and decision support into one workflow:
+
+- **Discover** relevant opportunities using search, filters, location, experience, skills, and domain.
+- **Understand fit** by uploading a resume and receiving personalized job recommendations.
+- **Decide faster** with structured job details, saved jobs, application links, and contextual AI assistance.
+
+---
+
+## Key Features
+
+| Feature | Description |
+|---|---|
+| Job discovery | Search and explore relevant job opportunities. |
+| Advanced filtering | Filter by location, experience, domain, skills, and source. |
+| Resume matching | Upload a PDF resume and receive personalized recommendations. |
+| AI assistant | Ask questions using job and profile context. |
+| Saved jobs | Save opportunities for later review. |
+| Job details | View requirements, descriptions, and application links. |
+| Authentication | Email/password, Google OAuth, and password recovery. |
+| Responsive UI | Optimized for desktop and mobile usage. |
+
+---
+
 ## Product Workflow
 ```mermaid
 flowchart TD
