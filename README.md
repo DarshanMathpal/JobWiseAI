@@ -84,8 +84,8 @@ Personalized Recommendations
 ```mermaid
 flowchart TD
     U[User]
-    A[Authentication<br/>Supabase]
-    D[Job Discovery<br/><br/>Search • Role Suggestions<br/>Filters • Location • Experience • Domain<br/>Cached Initial Results]
+    A[Authentication Supabase]
+    D[Job Discovery Search • Role Suggestions Filters • Location • Experience • Domain Cached Initial Results]
     R[Job Results]
     J[Job Details]
     RS[Resume Upload]
@@ -150,7 +150,7 @@ Frontend publishable credentials are supplied through Vite environment variables
 
 Full interactive documentation:
 
-**https://jobwise-ai-backend.onrender.com/docs**
+**[API Documentation Link](https://jobwise-ai-backend.onrender.com/docs)**
 
 The API covers jobs and filters, hierarchical locations, resume processing and recommendations, health checks, and AI assistant workflows.
 
