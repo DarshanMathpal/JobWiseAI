@@ -6,7 +6,7 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 
 🌐 **[Live Website Link](https://job-wise-ai.vercel.app)** 
 
-▶️ **[Project Video Link]** 
+▶️ **[Project Video Link](https://drive.google.com/file/d/1lFHG_tE6I7Wy65sn-gb2wOnT6Ae-BML2/view?usp=sharing)** 
 
 📚 **[API Documentation Link](https://jobwise-ai-backend.onrender.com/docs)**
 
