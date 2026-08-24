@@ -69,8 +69,8 @@ flowchart TD
     A --> D
     D --> R
     R --> J
+    D --> RS
 
-    J --> RS
     RS --> EX
     EX --> RP
     RP --> M
