@@ -1,0 +1,32 @@
+# Secrets / environment
+.env
+.env.*.local
+frontend/.env
+backend/.env
+
+# Dependencies / virtual environments
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+venv/
+.venv/
+backend/venv/
+backend/.venv/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Build / tool output
+.vite/
+
+# Large local dataset
+/data/jobs.json
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
