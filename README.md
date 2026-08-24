@@ -42,6 +42,8 @@ JobWise AI brings job search, location-aware filtering, resume matching, saved j
 
 These screenshots reflect the working UI tested locally before deployment.
 
+---
+
 ## Product Workflow
 
 ```text
@@ -77,7 +79,7 @@ Resume Profile + Matching
   ▼
 Personalized Recommendations
 ```
-
+---
 ## System Architecture
 
 ```mermaid
@@ -271,10 +273,3 @@ CORS_ORIGINS=http://localhost:5173
 The frontend caches default job results, country data, filter options, and saved jobs in the browser. Cached default results can render immediately while fresh API data is requested in the background, improving perceived loading speed.
 
 ---
-
-## Live Demo
-
-🌐 https://job-wise-ai.vercel.app  
-📚 https://jobwise-ai-backend.onrender.com/docs
-
-▶️ **Project walkthrough:** add the video link here after recording.
