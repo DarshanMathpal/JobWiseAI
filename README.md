@@ -137,7 +137,7 @@ flowchart TD
 
 - **Frontend:** UI, authentication UX, search/filter interactions, local caching, saved jobs, resume upload UI, AI assistant UI, and job-details rendering.
 - **Backend:** job APIs, filtering/pagination, location data APIs, resume PDF extraction, recommendation logic, AI endpoints, and database access.
-- **Supabase:** authentication plus the `jobs` data used by the backend.
+- **Supabase:** authentication plus the `jobs` data used by the backend, including country information used for location-based filtering.
 - **Gemini:** resume analysis/enrichment and AI assistant requests.
 
 ---
@@ -160,25 +160,39 @@ flowchart TD
 
 ```text
 JobWiseAI/
+│
 ├── docs/
 │   ├── screenshots/
 │   └── architecture/
+│
 ├── frontend/
-│   ├── src/
 │   ├── public/
+│   ├── src/
+│   │   ├── lib/
+│   │   ├── App.css
+│   │   ├── JobAssistant.jsx
+│   │   ├── JobDetails.jsx
+│   │   ├── main.jsx
+│   │   └── ...
+│   ├── .env.example
 │   ├── package.json
-│   └── vite.config.js
+│   ├── vite.config.js
+│   └── ...
+│
 ├── backend/
 │   ├── main.py
-│   ├── requirements.txt
+│   ├── populate_countries.py
 │   ├── supabase_client.py
 │   ├── supabase_admin.py
 │   ├── ingest_jobs.py
 │   ├── enrich_jobs.py
+│   ├── requirements.txt
+│   ├── .env.example
 │   └── ...
-├── render.yaml
+│
 ├── .gitignore
-└── README.md
+├── README.md
+└── render.yaml
 ```
 ---
 
@@ -210,6 +224,31 @@ GitHub
 | API Docs | https://jobwise-ai-backend.onrender.com/docs |
 
 ---
+
+## Known Constraints
+
+| Platform | Constraint |
+|---|---|
+| Render | High-memory or complex job queries may slow down or restart the backend. |
+| Vercel | Frontend depends on backend availability for API-driven features. |
+| Supabase | Large text-search queries can be resource-intensive and may hit timeouts. |
+| OAuth | Google OAuth requires correct production redirect and environment configuration. |
+
+---
+
+## Current Status
+
+| Component | Status |
+|---|---|
+| Frontend | Deployed on Vercel ✅ |
+| Backend | Deployed on Render ✅ |
+| Database & Auth | Supabase ✅ |
+| Resume upload & matching | Working ✅ |
+| Job discovery & filtering | Working ✅ |
+| Saved jobs & application links | Working ✅ |
+| AI assistant | Available with Gemini configuration ✅ |
+
+----
 
 ## Local Development
 
@@ -268,7 +307,7 @@ VITE_API_BASE_URL=http://localhost:8000
 SUPABASE_URL=your_supabase_url
 SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-CORS_ORIGINS=http://localhost:5173
+CORS_ORIGINS=http://localhost:5173,https://job-wise-ai.vercel.app
 ```
 
 `GEMINI_API_KEY` is optional for the manual Gemini-powered enrichment/analysis workflows; users who enable Gemini-powered functionality should provide their own valid Gemini key.
