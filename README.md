@@ -240,7 +240,7 @@ GitHub
 
 | Component | Status |
 |---|---|
-| Frontend | Deployed on Vercel | ✅ |
+| Frontend | Deployed on Vercel ✅ |
 | Backend | Deployed on Render ✅ |
 | Database & Auth | Supabase ✅ |
 | Resume upload & matching | Working ✅ |
