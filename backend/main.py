@@ -530,17 +530,43 @@ def _job_posted_timestamp(job):
         or job.get("created_at")
         or job.get("updated_at")
     )
+
     if not raw:
         return None
+
+    value = str(raw).strip()
+
+    # Standard ISO timestamps, e.g.:
+    # 2026-08-20T18:29:47.191857+00:00
     try:
-        value = str(raw).replace("Z", "+00:00")
-        dt = datetime.fromisoformat(value)
+        iso_value = value.replace("Z", "+00:00")
+        dt = datetime.fromisoformat(iso_value)
+
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
-        return dt.timestamp()
-    except (TypeError, ValueError):
-        return None
 
+        return dt.timestamp()
+
+    except (TypeError, ValueError):
+        pass
+
+    # Job-source format, e.g.:
+    # 2025/8/13, 19:30
+    # 2025/08/13, 19:30
+    for fmt in (
+        "%Y/%m/%d, %H:%M",
+        "%Y/%m/%d, %H:%M:%S",
+        "%Y/%-m/%-d, %H:%M",
+        "%Y/%-m/%-d, %H:%M:%S",
+    ):
+        try:
+            dt = datetime.strptime(value, fmt)
+            dt = dt.replace(tzinfo=timezone.utc)
+            return dt.timestamp()
+        except (TypeError, ValueError):
+            continue
+
+    return None
 
 
 # --------------------------------------------------
@@ -709,15 +735,249 @@ def get_jobs(
     offset: int = Query(default=0, ge=0),
 ):
 
-    # Fetch the complete cached public job pool so totals are exact even
-    # when Supabase limits an individual response to ~1,000 rows.
+    # Fast path: when no filters/search are active, let Supabase
+    # paginate the jobs directly instead of loading the full dataset.
+    has_filters = bool(
+        search
+        or source
+        or skill
+        or location
+        or domain
+        or experience
+        or posted_window
+    )
+
+    if not has_filters:
+        response = (
+            supabase
+            .table("jobs")
+        .select(
+            "job_id,title,company_name,location,source,skills,roles,"
+            "min_experience,max_experience,domain,employment_type,"
+            "thumbnail,ai_skills,ai_roles,ai_tags,ai_min_experience,"
+            "ai_max_experience,ai_enriched,created_at,posted_at",
+            count="exact",
+        )
+            .order("job_id")
+            .range(offset, offset + limit - 1)
+            .execute()
+        )
+
+        page = response.data or []
+        total_all = response.count or 0
+
+        return {
+            "count": len(page),
+            "total": total_all,
+            "total_all": total_all,
+            "offset": offset,
+            "limit": limit,
+            "has_more": offset + len(page) < total_all,
+            "jobs": [_public_job(job) for job in page],
+        }
+    # Fast path: source-only filtering.
+    if (
+        source
+        and not search
+        and not skill
+        and not location
+        and not domain
+        and not experience
+        and not posted_window
+    ):
+        response = (
+            supabase
+            .table("jobs")
+            .select(
+                "job_id,title,company_name,location,source,skills,roles,"
+                "min_experience,max_experience,domain,employment_type,"
+                "thumbnail,ai_skills,ai_roles,ai_tags,ai_min_experience,"
+                "ai_max_experience,ai_enriched,created_at,posted_at",
+                count="exact",
+            )
+            .eq("source", source.strip())
+            .order("job_id")
+            .range(offset, offset + limit - 1)
+            .execute()
+        )
+
+        page = response.data or []
+        total = response.count or 0
+
+        return {
+            "count": len(page),
+            "total": total,
+            "offset": offset,
+            "limit": limit,
+            "has_more": offset + len(page) < total,
+            "jobs": [_public_job(job) for job in page],
+        }
+    # Fast path: source + country-level location.
+    if (
+        source
+        and location
+        and not search
+        and not skill
+        and not domain
+        and not experience
+        and not posted_window
+    ):
+        selected_country = None
+
+        for value in location:
+            if not isinstance(value, str):
+                continue
+
+            value = value.strip()
+            parts = value.split("|", 2)
+
+            if len(parts) == 3 and parts[0].lower() == "country":
+                selected_country = parts[2].strip()
+                break
+
+            if value:
+                selected_country = value
+                break
+
+        if selected_country:
+            response = (
+                supabase
+                .table("jobs")
+                .select(
+                    "job_id,title,company_name,location,source,skills,roles,"
+                    "min_experience,max_experience,domain,employment_type,"
+                    "thumbnail,ai_skills,ai_roles,ai_tags,ai_min_experience,"
+                    "ai_max_experience,ai_enriched,created_at,posted_at"
+                )
+                .eq("source", source.strip())
+                .eq("country", selected_country)
+                .order("job_id")
+                .range(offset, offset + limit)
+                .execute()
+            )
+
+            fetched_jobs = response.data or []
+
+            # Fetch one extra row to determine whether another page exists.
+            has_more = len(fetched_jobs) > limit
+            page = fetched_jobs[:limit]
+
+            return {
+                "count": len(page),
+                "total": None,
+                "total_all": None,
+                "offset": offset,
+                "limit": limit,
+                "has_more": has_more,
+                "jobs": [_public_job(job) for job in page],
+            }
+
+    # Fast path: country-only location.
+    if (
+        location
+        and not source
+        and not search
+        and not skill
+        and not domain
+        and not experience
+        and not posted_window
+    ):
+        selected_country = None
+
+        for value in location:
+            if not isinstance(value, str):
+                continue
+
+            value = value.strip()
+            parts = value.split("|", 2)
+
+            if len(parts) == 3 and parts[0].lower() == "country":
+                selected_country = parts[2].strip()
+                break
+
+            if value:
+                selected_country = value
+                break
+
+        if selected_country:
+            response = (
+                supabase
+                .table("jobs")
+                .select(
+                    "job_id,title,company_name,location,source,skills,roles,"
+                    "min_experience,max_experience,domain,employment_type,"
+                    "thumbnail,ai_skills,ai_roles,ai_tags,ai_min_experience,"
+                    "ai_max_experience,ai_enriched,created_at,posted_at"
+                )
+                .eq("country", selected_country)
+                .order("job_id")
+                .range(offset, offset + limit)
+                .execute()
+            )
+            fetched_jobs = response.data or []
+            has_more = len(fetched_jobs) > limit
+            page = fetched_jobs[:limit]
+            return {
+                "count": len(page),
+                "total": None,
+                "total_all": None,
+                "offset": offset,
+                "limit": limit,
+                "has_more": has_more,
+                "jobs": [_public_job(job) for job in page],
+            }
+    # Fast path: domain-only filtering.
+    if (
+        domain
+        and not source
+        and not search
+        and not skill
+        and not location
+        and not experience
+        and not posted_window
+    ):
+        selected_domain = None
+
+        for value in domain:
+            if isinstance(value, str) and value.strip():
+                selected_domain = value.strip()
+                break
+
+        if selected_domain:
+            response = (
+                supabase
+                .table("jobs")
+                .select(
+                    "job_id,title,company_name,location,source,skills,roles,"
+                    "min_experience,max_experience,domain,employment_type,"
+                    "thumbnail,ai_skills,ai_roles,ai_tags,ai_min_experience,"
+                    "ai_max_experience,ai_enriched,created_at,posted_at"
+                )
+                .eq("domain", selected_domain)
+                .order("job_id")
+                .range(offset, offset + limit)
+                .execute()
+            )
+
+            fetched_jobs = response.data or []
+            has_more = len(fetched_jobs) > limit
+            page = fetched_jobs[:limit]
+
+            return {
+                "count": len(page),
+                "total": None,
+                "total_all": None,
+                "offset": offset,
+                "limit": limit,
+                "has_more": has_more,
+                "jobs": [_public_job(job) for job in page],
+            }
+    # Existing filtered-search logic continues below.
     jobs = list(_fetch_all_job_rows())
     total_all = len(jobs)
-
     # -----------------------------------------
     # Source filter (single select)
     # -----------------------------------------
-
     if source:
         source_value = source.strip().lower()
 
@@ -768,15 +1028,34 @@ def get_jobs(
         if isinstance(value, str) and value.strip()
     }
 
-    selected_locations = {
-        value.strip().lower()
-        for value in (location or [])
-        if (
-            isinstance(value, str)
-            and value.strip()
-            and value.strip().lower() != "anywhere"
-        )
-    }
+    selected_locations = set()
+
+    for value in (location or []):
+        if not isinstance(value, str):
+            continue
+
+        value = value.strip()
+
+        if not value or value.lower() == "anywhere":
+            continue
+
+        # Frontend sends structured locations such as:
+        # country|BD|Bangladesh
+        # state|MH|Maharashtra
+        # city|Pune|Pune
+        #
+        # Keep the user-visible name for matching.
+        parts = value.split("|", 2)
+
+        if len(parts) == 3:
+            location_type, location_code, location_name = parts
+
+            if location_type.lower() in {"country", "state", "city"}:
+                selected_locations.add(location_name.strip().lower())
+                continue
+
+        # Backward compatibility for plain values.
+        selected_locations.add(value.lower())
 
     selected_domains = {
         value.strip().lower()
@@ -861,7 +1140,23 @@ def get_jobs(
 
                 selected_city = selected_location.split(",", 1)[0].strip()
 
-                # Match either the full location or the city.
+                # Country-level selection, e.g. "India", "Canada", "United States"
+                country_names = {
+                    str(country.get("name", "")).strip().lower()
+                    for country in LOCATION_COUNTRIES_STATIC
+                    if country.get("name")
+                }
+
+                if selected_location in country_names:
+                    if _country_matches_job_location(
+                        selected_location,
+                        normalized_job_location,
+                    ):
+                        location_match = True
+                        break
+                    continue
+
+                # Existing city/full-location matching
                 if (
                     selected_location == normalized_job_location
                     or selected_city == job_city
@@ -1013,7 +1308,202 @@ def normalize_location(
 
     return location
 
+def _country_matches_job_location(
+    selected_country: str,
+    job_location: str,
+) -> bool:
+    """
+    Return True when a job location belongs to the selected country.
 
+    Handles:
+      "India" -> "Pune, Maharashtra"
+      "India" -> "Mumbai, Maharashtra"
+      "Canada" -> "Toronto, ON, Canada"
+      "United Kingdom" -> "London, UK"
+    """
+
+    if not selected_country or not job_location:
+        return False
+
+    selected_country = selected_country.strip().lower()
+    parts = [
+        part.strip().lower()
+        for part in job_location.split(",")
+        if part.strip()
+    ]
+
+    # Direct country match, e.g.:
+    # "New York, NY, United States"
+    if selected_country in parts:
+        return True
+
+    # Find the ISO code for the selected country.
+    country_code = None
+
+    for country in LOCATION_COUNTRIES_STATIC:
+        if (
+            str(country.get("name", "")).strip().lower()
+            == selected_country
+        ):
+            country_code = country.get("code")
+            break
+
+    if not country_code:
+        return False
+
+    # For locations such as:
+    # "Pune, Maharashtra"
+    # the database does not store "India", so infer the country
+    # from the state/region.
+    try:
+        from countrystatecity_countries import get_states_of_country
+
+        states = get_states_of_country(country_code)
+
+        state_names = {
+            str(getattr(state, "name", "")).strip().lower()
+            for state in states
+            if getattr(state, "name", None)
+        }
+
+        state_codes = {
+            str(getattr(state, "iso2", "")).strip().lower()
+            for state in states
+            if getattr(state, "iso2", None)
+        }
+
+        # Check every location component after the city.
+        for part in parts[1:]:
+            if part in state_names or part in state_codes:
+                return True
+
+    except Exception:
+        pass
+
+    return False
+
+# --------------------------------------------------
+# Country job counts
+# --------------------------------------------------
+
+@app.get("/api/jobs/country-counts")
+def get_country_counts():
+    """
+    Return country-level job counts.
+
+    Builds the state -> country mapping once, then scans the job
+    dataset only once.
+    """
+    jobs = _fetch_all_job_rows()
+
+    # Build state/region -> country mapping once.
+    state_to_country = {}
+
+    try:
+        from countrystatecity_countries import get_states_of_country
+
+        for country in LOCATION_COUNTRIES_STATIC:
+            country_code = country.get("code")
+            country_name = country.get("name")
+
+            if not country_code or not country_name:
+                continue
+
+            try:
+                states = get_states_of_country(country_code)
+
+                for state in states:
+                    state_name = str(
+                        getattr(state, "name", "")
+                    ).strip().lower()
+
+                    state_code = str(
+                        getattr(state, "iso2", "")
+                    ).strip().lower()
+
+                    if state_name:
+                        state_to_country[state_name] = country_name
+
+                    if state_code:
+                        state_to_country[state_code] = country_name
+
+            except Exception:
+                continue
+
+    except Exception:
+        state_to_country = {}
+
+    counts = {}
+
+    for job in jobs:
+        location = normalize_location(job.get("location"))
+
+        if not location:
+            continue
+
+        location_lower = location.strip().lower()
+
+        # Direct country value.
+        direct_country = next(
+            (
+                country["name"]
+                for country in LOCATION_COUNTRIES_STATIC
+                if country["name"].strip().lower() == location_lower
+            ),
+            None,
+        )
+
+        if direct_country:
+            counts[direct_country] = (
+                counts.get(direct_country, 0) + 1
+            )
+            continue
+
+        # Explicit country in the location string.
+        matched_country = None
+
+        for country in LOCATION_COUNTRIES_STATIC:
+            country_name = country["name"].strip().lower()
+
+            if country_name in location_lower:
+                matched_country = country["name"]
+                break
+
+        if matched_country:
+            counts[matched_country] = (
+                counts.get(matched_country, 0) + 1
+            )
+            continue
+
+        # Infer country from state/region.
+        parts = [
+            part.strip().lower()
+            for part in location.split(",")
+            if part.strip()
+        ]
+
+        for part in parts[1:]:
+            country_name = state_to_country.get(part)
+
+            if country_name:
+                counts[country_name] = (
+                    counts.get(country_name, 0) + 1
+                )
+                break
+
+    return {
+        "countries": sorted(
+            [
+                {
+                    "country": country,
+                    "jobs": count,
+                }
+                for country, count in counts.items()
+            ],
+            key=lambda item: item["jobs"],
+            reverse=True,
+        )
+    }
 # --------------------------------------------------
 # Job filter options
 # Reads the full jobs table in batches
@@ -1030,6 +1520,60 @@ def get_filter_options():
     global FILTER_OPTIONS_CACHE
 
     if FILTER_OPTIONS_CACHE is not None:
+        return FILTER_OPTIONS_CACHE
+
+    jobs = _fetch_all_job_rows()
+    if jobs:
+        # Build filter options from the existing cached job pool.
+        source_values = set()
+        location_values = set()
+        domain_values = set()
+        skill_values = set()
+        role_values = set()
+        locations_by_state = {}
+
+        for job in jobs:
+            title = _clean_role_title(job.get("title"))
+            if title and len(title) <= 90:
+                role_values.add(title)
+
+            source = job.get("source")
+            if isinstance(source, str) and source.strip():
+                source_values.add(source.strip())
+
+            location = normalize_location(job.get("location"))
+            if location:
+                location_values.add(location)
+
+            domain = job.get("domain")
+            if isinstance(domain, str) and domain.strip():
+                domain_values.add(domain.strip())
+
+            raw_skills = job.get("skills") or ""
+            if isinstance(raw_skills, str):
+                for raw_skill in raw_skills.split(","):
+                    canonical = catalog_skill_match(raw_skill)
+                    if canonical:
+                        skill_values.add(canonical)
+
+            ai_skills = job.get("ai_skills") or []
+            if isinstance(ai_skills, list):
+                for raw_skill in ai_skills:
+                    canonical = catalog_skill_match(raw_skill)
+                    if canonical:
+                        skill_values.add(canonical)
+
+        FILTER_OPTIONS_CACHE = {
+            "sources": sorted(source_values, key=str.lower),
+            "locations": sorted(location_values, key=str.lower),
+            "skills": sorted(skill_values, key=str.lower),
+            "domains": sorted(domain_values, key=str.lower),
+            "roleTitles": sorted(role_values, key=str.lower),
+            "locationsByState": {
+                state: sorted(cities, key=str.lower)
+                for state, cities in locations_by_state.items()
+            },
+        }
         return FILTER_OPTIONS_CACHE
 
     batch_size = 1000
