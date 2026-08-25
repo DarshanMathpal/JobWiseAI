@@ -327,8 +327,8 @@ function JobDetails({ jobId, onBack, profile = null }) {
         <div className="detail-layout">
           <div className="detail-main-column">
             <section className="detail-card">
-              <div className="detail-card-heading">
-                <span>ABOUT THE JOB</span>
+              <div className="detail-card-heading detail-about-heading">
+                <span>About the Job</span>
               </div>
 
               <div className="detail-description">
@@ -360,8 +360,8 @@ function JobDetails({ jobId, onBack, profile = null }) {
             </section>
 
             <section className="detail-card">
-              <div className="detail-card-heading">
-                <span>REQUIREMENTS</span>
+              <div className="detail-card-heading detail-about-heading">
+                <span>Key Skills</span>
                 <strong>{skills.length} skills</strong>
               </div>
 
@@ -376,8 +376,8 @@ function JobDetails({ jobId, onBack, profile = null }) {
 
             {roles.length > 0 && (
               <section className="detail-card">
-                <div className="detail-card-heading">
-                  <span>RELATED ROLES</span>
+                <div className="detail-card-heading detail-about-heading">
+                  <span>Related Roles</span>
                 </div>
 
                 <div className="detail-chip-grid subtle-chips">
