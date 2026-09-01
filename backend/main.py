@@ -1,3 +1,5 @@
+from urllib import response
+
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Query, UploadFile, File, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -63,7 +65,7 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.exception("Unhandled error on %s %s", request.method, request.url.path)
-    return JSONResponse(
+    response = JSONResponse(
         status_code=500,
         content={
             "success": False,
@@ -71,6 +73,12 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
         },
     )
 
+    origin = request.headers.get("origin")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+
+    return response
 
 # --------------------------------------------------
 # Basic routes
@@ -689,15 +697,30 @@ def _fetch_all_job_rows():
     batch_size = 500
     field_string = ",".join(fields)
     while True:
-        response = (
+        query = (
             supabase
             .table("jobs")
             .select(field_string)
             .order("job_id")
             .range(start, start + batch_size - 1)
-            .execute()
         )
-        batch = response.data or []
+        batch = None
+        last_exc = None
+        for attempt in range(3):
+            try:
+                response = query.execute()
+                batch = response.data or []
+                last_exc = None
+                break
+            except Exception as exc:
+                last_exc = exc
+                time.sleep(0.5 * (attempt + 1))
+
+        if last_exc is not None:
+            if JOBS_CACHE is not None:
+                return JOBS_CACHE
+            raise last_exc
+        
         if not batch:
             break
         rows.extend(batch)
@@ -1596,15 +1619,27 @@ def get_filter_options():
 
     try:
         while True:
-            response = (
+            query = (
                 supabase
                 .table("jobs")
                 .select("title,roles,ai_roles,source,skills,ai_skills,location,domain")
                 .range(start, start + batch_size - 1)
-                .execute()
             )
 
-            jobs = response.data or []
+            jobs = None
+            last_exc = None
+            for attempt in range(3):
+                try:
+                    response = query.execute()
+                    jobs = response.data or []
+                    last_exc = None
+                    break
+                except Exception as exc:
+                    last_exc = exc
+                    time.sleep(0.5 * (attempt + 1))
+
+            if last_exc is not None:
+                raise last_exc        
 
             if not jobs:
                 break
